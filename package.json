@@ -1,0 +1,30 @@
+{
+  "name": "devtinder-node",
+  "version": "1.0.0",
+  "description": "Tinder for developers.",
+  "keywords": [
+    "node.js",
+    "javascript"
+  ],
+  "homepage": "https://github.com/KhareShaunak/DevTinder-Node#readme",
+  "bugs": {
+    "url": "https://github.com/KhareShaunak/DevTinder-Node/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KhareShaunak/DevTinder-Node.git"
+  },
+  "license": "ISC",
+  "author": "shaunak khare",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemon": "^3.1.10"
+  }
+}
