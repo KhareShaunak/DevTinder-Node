@@ -6,7 +6,7 @@ app.use("/test", (req, res) => {
     res.send("Hello World from test!");
 });
 
-app.use("/", (req, res) => {
+app.use("/hello", (req, res) => {
     res.send("Hello World from Home!");
 });
 
