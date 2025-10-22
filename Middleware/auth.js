@@ -1,7 +1,7 @@
 const adminAuth = (req, res, next) => {
     console.log("Admin auth is getting checked!")
-    const token = "fakeToken";
-    const isAuth = token === "wytwtwewefgweg"
+    const token = "adminToken";
+    const isAuth = token === "adminToken"
     if (!isAuth) {
         res.status(401).send("Unauthorize request!");
     }
@@ -13,7 +13,7 @@ const adminAuth = (req, res, next) => {
 
 const userAuth = (req, res, next) => {
     console.log("user auth is getting checked!")
-    const token = "userToken";
+    const token = "fakeToken";
     const isAuth = token === "userToken"
     if (!isAuth) {
         res.status(401).send("Unauthorize request!");

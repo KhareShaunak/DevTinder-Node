@@ -4,19 +4,42 @@ const {adminAuth, userAuth} = require('../Middleware/auth')
 
 const app = express();
 
-app.use("/user", userAuth, (req, res) => {
-    res.send("User data fetched!");
+// app.post("/user/login", (req, res) => {
+//     res.send("User has been logged in successfully!");
+// });
+
+
+app.get("/getUserData", (req, res) => {
+    // res.send("User data fetched!");
+    // try {
+        throw new Error("Some random error!");
+    // } catch (err) {
+    //     res.status(500).send("An error has occured!");
+    // }
+    
 });
 
-app.use("/admin", adminAuth);
-
-app.get("/admin/getAllData", (req, res) => {
-    res.send("all data has been fetched!")
+app.use("/", (err, req, res, next) => {
+    if (err) {
+        res.status(500).send("something went wrong!");
+    }
+    // else {
+    //     next();
+    // }
 });
 
-app.delete("/admin/deleteUser", (req, res) => {
-    res.send("Deleted a user!");
-})
+
+
+
+// app.use("/admin", adminAuth);
+
+// app.get("/admin/getAllData", (req, res) => {
+//     res.send("all data has been fetched!")
+// });
+
+// app.delete("/admin/deleteUser", (req, res) => {
+//     res.send("Deleted a user!");
+// })
 
 // app.get("/user", [(req, res, next) => {
 //     console.log("hello this is the 1st request handler!.");
