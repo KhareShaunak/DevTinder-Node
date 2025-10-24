@@ -8,17 +8,10 @@ const connectDB = require('./config/database');
 
 const User = require('./models/user');
 
-app.post("/signup", async (req, res) => {
-    const userObj = {
-        firstName: "Shaunak",
-        lastName: "Khare",
-        emailId: "shaunak@gmail.com",
-        password: "Shaunak@12345",
-        age: 25,
-        gender: "male"
-    };
+app.use(express.json()); //Middleware for JSON Parsing
 
-    const user = new User(userObj);
+app.post("/signup", async (req, res) => {
+    const user = new User(req.body);
     try {
         await user.save();
         res.send("user got saved successfully!");
