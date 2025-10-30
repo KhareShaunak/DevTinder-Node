@@ -9,14 +9,30 @@ const connectDB = require('./config/database');
 const User = require('./models/user');
 const { Error } = require('mongoose');
 
+const { validateSignUpData } = require('./utils/validations');
+
+const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+
+
+
 app.use(express.json()); //Middleware for JSON Parsing
+
+app.use(cookieParser());
 
 
 //signup API
 app.post("/signup", async (req, res) => {
-    const user = new User(req.body);
+    const {firstName, lastName, password, emailId } = req.body
+    
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
+        firstName, lastName, password: hashedPassword, emailId
+    });
     console.log(req.body);
     try {
+        validateSignUpData(req);
         const ALLOWED_FIELDS = ["firstName", "lastName", "emailId",
             "password", "gender", "photoUrl", "about", "skills", "age"
         ];
@@ -45,6 +61,38 @@ app.post("/signup", async (req, res) => {
 
 });
 
+//POST /login
+app.post("/login", async (req, res) => {
+    try {
+        //Find the user by email
+    const { emailId, password } = req.body;
+
+        const user = await User?.findOne({ emailId: emailId });
+        
+        if (!user) {
+        throw new Error("Invalid credentials!")
+    }
+
+    console.log(user.password);
+
+    
+
+    //Comparing password
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+        if (isPasswordValid) {
+            //Set set-cookie header
+            const token = jwt.sign({_id: user._id}, "topSecret");
+            res.cookie("token", token);
+            res.send("Login successful!!");
+    } else {
+        throw new Error("Invalid credentials!");
+    }
+    } catch (err) {
+        res.status(400).send("ERROR:" + err.message);
+    }
+    
+});
+
 //GET /getUserById
 app.get("/getUserByEmail", async (req, res) => {
     const user = await User.findOne({ emailId: req.body.emailId });
@@ -57,6 +105,22 @@ app.get("/getUserByEmail", async (req, res) => {
         }
     } catch (error) {
         res.status(400).send("Something went wrong!");
+    }
+});
+
+//GET /profile
+app.get("/profile", async (req, res) => {
+    const cookies = req.cookies;
+
+    const token = cookies.token;
+    console.log(token);
+
+    const decodedToken = jwt.verify(token, 'topSecret');
+
+    if (decodedToken) {
+        res.send(await User.findById(decodedToken._id));
+    } else {
+        res.status(440).send("session expired, login again");
     }
 });
 
