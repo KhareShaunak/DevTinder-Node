@@ -15,6 +15,32 @@ const validateSignUpData = (req) => {
     }
 }
 
+const validateEditData = (req) => {
+    const ALLOWED_UPDATES = ["firstName", "lastName", "age", "gender",
+        "photoUrl", "about",
+        "skills"
+    ];
+
+    const isValidEdit = Object.keys(req.body).every(field => {
+        return ALLOWED_UPDATES.includes(field);
+    });
+    return isValidEdit;
+};
+
+const validateNewPassword = (req) => {
+    const ALLOWED_FIELDS_PASS = ["newPassword", "confirmPassword"];
+
+    const isAllowedPasswordEdit = Object.keys(req.body).every(field => {
+        return ALLOWED_FIELDS_PASS.includes(field);
+    });
+
+    const isConfirmedPassword = req.body["newPassword"] === req.body["confirmPassword"];
+
+    return isAllowedPasswordEdit && validator.isStrongPassword(req.body["newPassword"]) && isConfirmedPassword;
+};
+
 module.exports = {
     validateSignUpData,
+    validateEditData,
+    validateNewPassword
 }
