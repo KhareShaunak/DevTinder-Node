@@ -61,7 +61,7 @@ authRouter.post("/login", async (req, res) => {
         }
     console.log(user.password);
     //Comparing password
-    const isPasswordValid = user.validatePassword(password);
+    const isPasswordValid = await user.validatePassword(password);
     if (isPasswordValid) {
         //Set set-cookie header
         const token = user.getJWT();

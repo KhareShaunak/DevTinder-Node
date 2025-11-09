@@ -7,6 +7,7 @@ const { Error } = require('mongoose');
 const cookieParser = require('cookie-parser');
 const { authRouter } = require('./routes/auth');
 const { profileRouter } = require('./routes/profile');
+const { requestRouter }  = require('./routes/requests');
 
 
 
@@ -18,6 +19,9 @@ app.use(cookieParser());
 //Mounting of routes 
 app.use("/auth", authRouter);
 app.use("/profile", profileRouter);
+app.use('/request', requestRouter);
+
+
 
 
 
