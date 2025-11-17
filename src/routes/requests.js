@@ -3,6 +3,7 @@ const requestRouter = express.Router();
 const ConnectionRequest = require('../models/connectionRequest');
 const User = require('../models/user');
 const { userAuth } = require('../Middleware/auth');
+const { default: mongoose } = require('mongoose');
 
 requestRouter.post("/send/:status/:toUserId", userAuth, async (req, res) => {
     try {
@@ -53,7 +54,55 @@ requestRouter.post("/send/:status/:toUserId", userAuth, async (req, res) => {
 });
 
 
+requestRouter.post("/review/:status/:requestId",
+    userAuth,
+    async (req, res) => {
+        // 1. Receiver of connection request must be logged in
+        //2. Validate the status
+        //3. Find the connectionRequest Where status of request is interested, 
+        //, and it should have valid requestId and ToUserId
+        //4. Change the status of the found connectionRequest into the given status (Accepted/Rejected)
+        //in Connection request and save that connection request
+        try { 
+            const loggedInUser = req.user;
+            const { status, requestId } = req.params;
+        //const requestId = req.params.requestId;
+        const allowedStatus = ["accepted", "rejected"];
+        
+        if (!allowedStatus.includes(status)) {
+            return res.status(400).json({ message: "Invalid status type!" });
+        }
 
+        const connectionRequest = await ConnectionRequest.findOne({
+            _id: requestId,
+            status: "interested",
+            toUserId: loggedInUser._id
+        });
+
+        if (!connectionRequest) {
+            res.status(404).json({ message: "Connection request not found!" });
+        }
+
+            connectionRequest.status = status;
+            console.log(connectionRequest.status);
+            console.log(connectionRequest instanceof mongoose.Document);
+
+
+            const data = await connectionRequest.save();
+            
+            res.json({
+                message: "Connection request" + connectionRequest.status,
+                data
+            });
+            
+
+        } catch (error) {
+            res.status(400).json({ message: "Error : " + error.message });
+        }
+        
+
+    });
+ 
 module.exports = { requestRouter };
 
 
